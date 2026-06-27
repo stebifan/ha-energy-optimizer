@@ -183,14 +183,21 @@ class EnergyOptimizerCoordinator(DataUpdateCoordinator[EnergyOptimizerData]):
         stat_rows: list[dict[str, Any]] = []
 
         try:
+            from functools import partial
+
             from homeassistant.components.recorder import history
 
-            states = await history.async_get_significant_states(
-                self.hass,
-                start,
-                now,
-                [entity_id],
-                significant_changes_only=False,
+            states = await self.hass.async_add_executor_job(
+                partial(
+                    history.get_significant_states,
+                    self.hass,
+                    start,
+                    now,
+                    [entity_id],
+                    None,
+                    True,
+                    False,
+                )
             )
             for state in states.get(entity_id, []):
                 if state.state in ("unknown", "unavailable"):
