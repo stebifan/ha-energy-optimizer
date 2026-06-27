@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
-from homeassistant.components.sensor import SensorEntity, SensorStateClass
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorEntity,
+    SensorStateClass,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfEnergy, UnitOfPower
 from homeassistant.core import HomeAssistant
@@ -53,10 +57,14 @@ class EnergyOptimizerEntity(CoordinatorEntity[EnergyOptimizerCoordinator], Senso
         self,
         coordinator: EnergyOptimizerCoordinator,
         entry: ConfigEntry,
+        unique_suffix: str,
+        name: str,
     ) -> None:
         """Initialize."""
         super().__init__(coordinator)
         self._entry = entry
+        self._attr_unique_id = f"{entry.entry_id}_{unique_suffix}"
+        self._attr_name = name
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry.entry_id)},
             name="Energy Optimizer",
@@ -67,9 +75,16 @@ class EnergyOptimizerEntity(CoordinatorEntity[EnergyOptimizerCoordinator], Senso
 class EnergyOptimizerPriceSensor(EnergyOptimizerEntity):
     """Current electricity price."""
 
-    _attr_name = "Strompreis aktuell"
     _attr_native_unit_of_measurement = "€/kWh"
     _attr_state_class = SensorStateClass.MEASUREMENT
+
+    def __init__(
+        self,
+        coordinator: EnergyOptimizerCoordinator,
+        entry: ConfigEntry,
+    ) -> None:
+        """Initialize."""
+        super().__init__(coordinator, entry, "price_current", "Strompreis aktuell")
 
     @property
     def native_value(self) -> float | None:
@@ -89,8 +104,15 @@ class EnergyOptimizerPriceSensor(EnergyOptimizerEntity):
 class EnergyOptimizerPriceRankSensor(EnergyOptimizerEntity):
     """Price rank today."""
 
-    _attr_name = "Strompreis Rang heute"
     _attr_state_class = SensorStateClass.MEASUREMENT
+
+    def __init__(
+        self,
+        coordinator: EnergyOptimizerCoordinator,
+        entry: ConfigEntry,
+    ) -> None:
+        """Initialize."""
+        super().__init__(coordinator, entry, "price_rank", "Strompreis Rang heute")
 
     @property
     def native_value(self) -> int | None:
@@ -101,9 +123,18 @@ class EnergyOptimizerPriceRankSensor(EnergyOptimizerEntity):
 class EnergyOptimizerLoadTodaySensor(EnergyOptimizerEntity):
     """Load forecast today."""
 
-    _attr_name = "Verbrauchsprognose heute"
     _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
-    _attr_device_class = "energy"
+    _attr_device_class = SensorDeviceClass.ENERGY
+
+    def __init__(
+        self,
+        coordinator: EnergyOptimizerCoordinator,
+        entry: ConfigEntry,
+    ) -> None:
+        """Initialize."""
+        super().__init__(
+            coordinator, entry, "load_forecast_today", "Verbrauchsprognose heute"
+        )
 
     @property
     def native_value(self) -> float:
@@ -119,9 +150,18 @@ class EnergyOptimizerLoadTodaySensor(EnergyOptimizerEntity):
 class EnergyOptimizerLoadTomorrowSensor(EnergyOptimizerEntity):
     """Load forecast tomorrow."""
 
-    _attr_name = "Verbrauchsprognose morgen"
     _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
-    _attr_device_class = "energy"
+    _attr_device_class = SensorDeviceClass.ENERGY
+
+    def __init__(
+        self,
+        coordinator: EnergyOptimizerCoordinator,
+        entry: ConfigEntry,
+    ) -> None:
+        """Initialize."""
+        super().__init__(
+            coordinator, entry, "load_forecast_tomorrow", "Verbrauchsprognose morgen"
+        )
 
     @property
     def native_value(self) -> float:
@@ -132,9 +172,16 @@ class EnergyOptimizerLoadTomorrowSensor(EnergyOptimizerEntity):
 class EnergyOptimizerPvTodaySensor(EnergyOptimizerEntity):
     """PV forecast today."""
 
-    _attr_name = "PV Prognose heute"
     _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
-    _attr_device_class = "energy"
+    _attr_device_class = SensorDeviceClass.ENERGY
+
+    def __init__(
+        self,
+        coordinator: EnergyOptimizerCoordinator,
+        entry: ConfigEntry,
+    ) -> None:
+        """Initialize."""
+        super().__init__(coordinator, entry, "pv_forecast_today", "PV Prognose heute")
 
     @property
     def native_value(self) -> float:
@@ -145,9 +192,18 @@ class EnergyOptimizerPvTodaySensor(EnergyOptimizerEntity):
 class EnergyOptimizerPvTomorrowSensor(EnergyOptimizerEntity):
     """PV forecast tomorrow."""
 
-    _attr_name = "PV Prognose morgen"
     _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
-    _attr_device_class = "energy"
+    _attr_device_class = SensorDeviceClass.ENERGY
+
+    def __init__(
+        self,
+        coordinator: EnergyOptimizerCoordinator,
+        entry: ConfigEntry,
+    ) -> None:
+        """Initialize."""
+        super().__init__(
+            coordinator, entry, "pv_forecast_tomorrow", "PV Prognose morgen"
+        )
 
     @property
     def native_value(self) -> float:
@@ -158,10 +214,17 @@ class EnergyOptimizerPvTomorrowSensor(EnergyOptimizerEntity):
 class EnergyOptimizerPvNowSensor(EnergyOptimizerEntity):
     """PV power now."""
 
-    _attr_name = "PV Leistung jetzt"
     _attr_native_unit_of_measurement = UnitOfPower.WATT
-    _attr_device_class = "power"
+    _attr_device_class = SensorDeviceClass.POWER
     _attr_state_class = SensorStateClass.MEASUREMENT
+
+    def __init__(
+        self,
+        coordinator: EnergyOptimizerCoordinator,
+        entry: ConfigEntry,
+    ) -> None:
+        """Initialize."""
+        super().__init__(coordinator, entry, "pv_power_now", "PV Leistung jetzt")
 
     @property
     def native_value(self) -> float:
@@ -172,8 +235,17 @@ class EnergyOptimizerPvNowSensor(EnergyOptimizerEntity):
 class EnergyOptimizerSavingsSensor(EnergyOptimizerEntity):
     """Estimated savings."""
 
-    _attr_name = "Geschätzte Einsparung heute"
     _attr_native_unit_of_measurement = "€"
+
+    def __init__(
+        self,
+        coordinator: EnergyOptimizerCoordinator,
+        entry: ConfigEntry,
+    ) -> None:
+        """Initialize."""
+        super().__init__(
+            coordinator, entry, "estimated_savings", "Geschätzte Einsparung heute"
+        )
 
     @property
     def native_value(self) -> float:
@@ -186,8 +258,15 @@ class EnergyOptimizerSavingsSensor(EnergyOptimizerEntity):
 class EnergyOptimizerBaselineCostSensor(EnergyOptimizerEntity):
     """Baseline cost without optimization."""
 
-    _attr_name = "Kosten Baseline heute"
     _attr_native_unit_of_measurement = "€"
+
+    def __init__(
+        self,
+        coordinator: EnergyOptimizerCoordinator,
+        entry: ConfigEntry,
+    ) -> None:
+        """Initialize."""
+        super().__init__(coordinator, entry, "baseline_cost", "Kosten Baseline heute")
 
     @property
     def native_value(self) -> float:
@@ -198,8 +277,15 @@ class EnergyOptimizerBaselineCostSensor(EnergyOptimizerEntity):
 class EnergyOptimizerOptimizedCostSensor(EnergyOptimizerEntity):
     """Optimized cost estimate."""
 
-    _attr_name = "Kosten optimiert heute"
     _attr_native_unit_of_measurement = "€"
+
+    def __init__(
+        self,
+        coordinator: EnergyOptimizerCoordinator,
+        entry: ConfigEntry,
+    ) -> None:
+        """Initialize."""
+        super().__init__(coordinator, entry, "optimized_cost", "Kosten optimiert heute")
 
     @property
     def native_value(self) -> float:
@@ -210,8 +296,15 @@ class EnergyOptimizerOptimizedCostSensor(EnergyOptimizerEntity):
 class EnergyOptimizerPlanSensor(EnergyOptimizerEntity):
     """Next planned action."""
 
-    _attr_name = "Nächste Aktion"
     _attr_icon = "mdi:calendar-clock"
+
+    def __init__(
+        self,
+        coordinator: EnergyOptimizerCoordinator,
+        entry: ConfigEntry,
+    ) -> None:
+        """Initialize."""
+        super().__init__(coordinator, entry, "next_action", "Nächste Aktion")
 
     @property
     def native_value(self) -> str:
