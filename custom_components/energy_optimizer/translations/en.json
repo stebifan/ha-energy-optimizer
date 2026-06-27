@@ -1,0 +1,22 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up Energy Optimizer",
+        "description": "Configure prices, consumption and PV forecast sources.",
+        "data": {
+          "load_power_entity": "House load power",
+          "price_entity": "Price sensor (EPEX Spot)",
+          "pv_forecast_today_entity": "PV forecast today",
+          "pv_forecast_tomorrow_entity": "PV forecast tomorrow",
+          "pv_power_now_entity": "PV power now",
+          "weather_entity": "Weather",
+          "price_surcharge_eur_kwh": "Price surcharge €/kWh",
+          "history_days": "History days",
+          "operation_mode": "Operation mode",
+          "profile": "Optimization profile"
+        }
+      }
+    }
+  }
+}

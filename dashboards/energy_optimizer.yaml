@@ -1,0 +1,46 @@
+title: Energy Optimizer
+path: energy-optimizer
+icon: mdi:solar-power
+cards:
+  - type: entities
+    title: Steuerung
+    entities:
+      - entity: switch.energy_optimizer_automatik_aktiv
+      - entity: select.energy_optimizer_optimierungsprofil
+      - entity: select.energy_optimizer_betriebsmodus
+  - type: glance
+    title: Strompreis
+    entities:
+      - entity: sensor.energy_optimizer_strompreis_aktuell
+      - entity: sensor.energy_optimizer_strompreis_rang_heute
+  - type: glance
+    title: Prognosen heute
+    entities:
+      - entity: sensor.energy_optimizer_verbrauchsprognose_heute
+      - entity: sensor.energy_optimizer_pv_prognose_heute
+      - entity: sensor.energy_optimizer_pv_leistung_jetzt
+  - type: glance
+    title: Kosten
+    entities:
+      - entity: sensor.energy_optimizer_kosten_baseline_heute
+      - entity: sensor.energy_optimizer_kosten_optimiert_heute
+      - entity: sensor.energy_optimizer_geschaetzte_einsparung_heute
+  - type: markdown
+    title: Nächste Aktion
+    content: >
+      {% set plan = state_attr('sensor.energy_optimizer_naechste_aktion', 'plan') %}
+      **Aktion:** {{ states('sensor.energy_optimizer_naechste_aktion') }}
+
+      {% if plan is iterable %}
+      | Stunde | Preis | Last | PV | Aktion |
+      |--------|-------|------|----|--------|
+      {% for row in plan[:12] %}
+      | {{ row.start[11:16] }} | {{ row.price_eur_kwh }} | {{ row.load_kwh }} | {{ row.pv_kwh }} | {{ row.action }} |
+      {% endfor %}
+      {% endif %}
+  - type: history-graph
+    title: Verlauf
+    entities:
+      - entity: sensor.energy_optimizer_strompreis_aktuell
+      - entity: sensor.energy_optimizer_pv_leistung_jetzt
+    hours_to_show: 24

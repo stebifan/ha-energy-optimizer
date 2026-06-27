@@ -1,0 +1,39 @@
+blueprint:
+  name: Energy Optimizer EcoFlow Netzladen Ende
+  description: Setzt Backup Reserve zurück wenn Netzladen nicht mehr empfohlen.
+  domain: automation
+  source_url: https://github.com/stefan/energy_optimizer
+  author: Energy Optimizer
+  input:
+    charge_sensor:
+      name: Netzladen empfohlen Sensor
+      selector:
+        entity:
+          domain: binary_sensor
+    backup_reserve_entity:
+      name: Backup Reserve Number Entity
+      selector:
+        entity:
+          domain: number
+    normal_reserve:
+      name: Normale Backup Reserve
+      default: 3
+      selector:
+        number:
+          min: 0
+          max: 100
+          step: 1
+
+trigger:
+  - platform: state
+    entity_id: !input charge_sensor
+    to: "off"
+
+action:
+  - service: number.set_value
+    target:
+      entity_id: !input backup_reserve_entity
+    data:
+      value: !input normal_reserve
+
+mode: single

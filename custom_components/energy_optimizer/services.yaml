@@ -1,0 +1,26 @@
+recalculate:
+  name: Recalculate
+  description: Force a full EMS recalculation.
+
+apply_plan:
+  name: Apply plan
+  description: Manually apply the current energy plan to devices.
+
+set_profile:
+  name: Set profile
+  description: Change the optimization profile.
+  fields:
+    profile:
+      name: Profile
+      description: Optimization profile name.
+      required: true
+      selector:
+        select:
+          options:
+            - cost_min
+            - self_sufficiency
+            - balanced
+            - winter
+            - summer
+            - backup
+            - custom

@@ -1,0 +1,74 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Energy Optimizer einrichten",
+        "description": "Basis-Konfiguration für Preise, Verbrauch und PV-Prognose.",
+        "data": {
+          "load_power_entity": "Hausverbrauch Leistung",
+          "price_entity": "Strompreis Sensor (EPEX Spot)",
+          "pv_forecast_today_entity": "PV Prognose heute",
+          "pv_forecast_tomorrow_entity": "PV Prognose morgen",
+          "pv_power_now_entity": "PV Leistung jetzt",
+          "weather_entity": "Wetter",
+          "price_surcharge_eur_kwh": "Preisaufschlag €/kWh",
+          "history_days": "Historie Tage",
+          "operation_mode": "Betriebsmodus",
+          "profile": "Optimierungsprofil"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Bereits konfiguriert"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Energy Optimizer Optionen",
+        "data": {
+          "operation_mode": "Betriebsmodus",
+          "profile": "Optimierungsprofil"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "strompreis_aktuell": { "name": "Strompreis aktuell" },
+      "strompreis_rang_heute": { "name": "Strompreis Rang heute" },
+      "verbrauchsprognose_heute": { "name": "Verbrauchsprognose heute" },
+      "verbrauchsprognose_morgen": { "name": "Verbrauchsprognose morgen" },
+      "pv_prognose_heute": { "name": "PV Prognose heute" },
+      "pv_prognose_morgen": { "name": "PV Prognose morgen" },
+      "pv_leistung_jetzt": { "name": "PV Leistung jetzt" },
+      "geschaetzte_einsparung_heute": { "name": "Geschätzte Einsparung heute" },
+      "naechste_aktion": { "name": "Nächste Aktion" }
+    },
+    "binary_sensor": {
+      "netzladen_empfohlen": { "name": "Netzladen empfohlen" },
+      "einspeisung_empfohlen": { "name": "Einspeisung empfohlen" }
+    },
+    "select": {
+      "optimierungsprofil": { "name": "Optimierungsprofil" },
+      "betriebsmodus": { "name": "Betriebsmodus" }
+    },
+    "switch": {
+      "automatik_aktiv": { "name": "Automatik aktiv" }
+    }
+  },
+  "services": {
+    "recalculate": {
+      "name": "Neu berechnen",
+      "description": "Energieplan vollständig neu berechnen."
+    },
+    "apply_plan": {
+      "name": "Plan anwenden",
+      "description": "Aktuellen Plan manuell auf Geräte anwenden."
+    },
+    "set_profile": {
+      "name": "Profil setzen",
+      "description": "Optimierungsprofil wechseln."
+    }
+  }
+}

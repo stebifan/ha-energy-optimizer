@@ -1,0 +1,41 @@
+blueprint:
+  name: Energy Optimizer EcoFlow Netzladen
+  description: Setzt Backup Reserve wenn Netzladen empfohlen wird (signals_only Modus).
+  domain: automation
+  source_url: https://github.com/stefan/energy_optimizer
+  author: Energy Optimizer
+  homeassistant:
+    min_version: "2024.1.0"
+  input:
+    charge_sensor:
+      name: Netzladen empfohlen Sensor
+      selector:
+        entity:
+          domain: binary_sensor
+    backup_reserve_entity:
+      name: Backup Reserve Number Entity
+      selector:
+        entity:
+          domain: number
+    charge_target:
+      name: Ziel Backup Reserve beim Laden
+      default: 80
+      selector:
+        number:
+          min: 5
+          max: 100
+          step: 1
+
+trigger:
+  - platform: state
+    entity_id: !input charge_sensor
+    to: "on"
+
+action:
+  - service: number.set_value
+    target:
+      entity_id: !input backup_reserve_entity
+    data:
+      value: !input charge_target
+
+mode: single
