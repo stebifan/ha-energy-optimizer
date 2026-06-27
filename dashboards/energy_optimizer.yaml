@@ -28,8 +28,8 @@ cards:
   - type: markdown
     title: Nächste Aktion
     content: >
-      {% set plan = state_attr('sensor.energy_optimizer_naechste_aktion', 'plan') %}
-      **Aktion:** {{ states('sensor.energy_optimizer_naechste_aktion') }}
+      {% set plan = state_attr('sensor.energy_optimizer_nachste_aktion', 'plan') %}
+      **Aktion:** {{ states('sensor.energy_optimizer_nachste_aktion') }}
 
       {% if plan is iterable %}
       | Stunde | Preis | Last | PV | Aktion |
