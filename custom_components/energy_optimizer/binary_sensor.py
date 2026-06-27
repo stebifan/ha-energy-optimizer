@@ -9,7 +9,7 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from ..const import (
+from .const import (
     BATTERY_TYPE_ECOFLOW,
     BATTERY_TYPE_VICTRON_BUFFER,
     CONF_BATTERY_TYPE,
@@ -17,8 +17,8 @@ from ..const import (
     SUBENTRY_TYPE_BATTERY,
     SUBENTRY_TYPE_LOAD,
 )
-from ..coordinator import EnergyOptimizerCoordinator
-from ..models.battery_model import BatteryState
+from .coordinator import EnergyOptimizerCoordinator
+from .models.battery_model import BatteryState
 
 
 async def async_setup_entry(

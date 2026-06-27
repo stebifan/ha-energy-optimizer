@@ -9,8 +9,8 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from ..const import DOMAIN, OPERATION_MODE_AUTO
-from ..coordinator import EnergyOptimizerCoordinator
+from .const import DOMAIN, OPERATION_MODE_AUTO
+from .coordinator import EnergyOptimizerCoordinator
 
 
 async def async_setup_entry(
@@ -50,7 +50,7 @@ class EnergyOptimizerAutoSwitch(
     @property
     def is_on(self) -> bool:
         """Return True if auto mode enabled."""
-        from ..const import CONF_OPERATION_MODE
+        from .const import CONF_OPERATION_MODE
 
         mode = self._entry.options.get(
             CONF_OPERATION_MODE,
@@ -60,7 +60,7 @@ class EnergyOptimizerAutoSwitch(
 
     async def async_turn_on(self, **kwargs) -> None:
         """Enable auto mode."""
-        from ..const import CONF_OPERATION_MODE
+        from .const import CONF_OPERATION_MODE
 
         self.hass.config_entries.async_update_entry(
             self._entry,
@@ -70,7 +70,7 @@ class EnergyOptimizerAutoSwitch(
 
     async def async_turn_off(self, **kwargs) -> None:
         """Disable auto mode (monitor)."""
-        from ..const import CONF_OPERATION_MODE, OPERATION_MODE_MONITOR
+        from .const import CONF_OPERATION_MODE, OPERATION_MODE_MONITOR
 
         self.hass.config_entries.async_update_entry(
             self._entry,

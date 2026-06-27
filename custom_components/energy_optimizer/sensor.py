@@ -10,14 +10,14 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from ..const import (
+from .const import (
     ATTR_FORECAST,
     ATTR_HOURLY,
     ATTR_PLAN,
     ATTR_SLOTS,
     DOMAIN,
 )
-from ..coordinator import EnergyOptimizerCoordinator
+from .coordinator import EnergyOptimizerCoordinator
 
 
 async def async_setup_entry(

@@ -1,1 +1,0 @@
-"""Platforms for Energy Optimizer."""
