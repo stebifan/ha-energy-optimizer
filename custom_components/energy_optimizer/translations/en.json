@@ -17,6 +17,131 @@
           "profile": "Optimization profile"
         }
       }
+    },
+    "abort": {
+      "already_configured": "Already configured"
+    }
+  },
+  "config_subentries": {
+    "battery": {
+      "title": "Battery",
+      "entry_type": "Battery",
+      "initiate_flow": {
+        "user": "Add battery"
+      },
+      "step": {
+        "user": {
+          "title": "Configure battery",
+          "description": "Add an EcoFlow, Victron buffer, or generic battery.",
+          "data": {
+            "name": "Name",
+            "battery_type": "Battery type",
+            "capacity_kwh": "Capacity (kWh)",
+            "priority": "Priority",
+            "soc_entity": "SOC sensor",
+            "normal_reserve": "Normal backup reserve",
+            "max_reserve": "Max backup reserve",
+            "min_soc": "Min SOC",
+            "backup_reserve_entity": "Backup reserve entity",
+            "pv_status_entity": "pv_status helper",
+            "pv_strom_entity": "pv_strom helper",
+            "pv_yield_power_entity": "PV yield power"
+          }
+        }
+      }
+    },
+    "pv": {
+      "title": "PV plant",
+      "entry_type": "PV plant",
+      "initiate_flow": {
+        "user": "Add PV plant"
+      },
+      "step": {
+        "user": {
+          "title": "Configure PV plant",
+          "description": "Additional PV source for forecasting.",
+          "data": {
+            "name": "Name",
+            "power_entity": "Energy today",
+            "pv_power_entity": "Power now"
+          }
+        }
+      }
+    },
+    "load": {
+      "title": "Shiftable load",
+      "entry_type": "Shiftable load",
+      "initiate_flow": {
+        "user": "Add load"
+      },
+      "step": {
+        "user": {
+          "title": "Configure shiftable load",
+          "description": "Pool, washing machine, or other deferrable consumers.",
+          "data": {
+            "name": "Name",
+            "control_entity": "Switch or script",
+            "priority": "Priority",
+            "constraint_type": "Constraint type",
+            "window_start": "Window start",
+            "window_end": "Window end",
+            "duration_minutes": "Duration (minutes)"
+          }
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Energy Optimizer options",
+        "data": {
+          "operation_mode": "Operation mode",
+          "profile": "Optimization profile",
+          "optimizer_engine": "Optimizer engine"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "strompreis_aktuell": { "name": "Current electricity price" },
+      "strompreis_rang_heute": { "name": "Price rank today" },
+      "verbrauchsprognose_heute": { "name": "Load forecast today" },
+      "verbrauchsprognose_morgen": { "name": "Load forecast tomorrow" },
+      "pv_prognose_heute": { "name": "PV forecast today" },
+      "pv_prognose_morgen": { "name": "PV forecast tomorrow" },
+      "pv_leistung_jetzt": { "name": "PV power now" },
+      "geschaetzte_einsparung_heute": { "name": "Estimated savings today" },
+      "kosten_baseline_heute": { "name": "Baseline cost today" },
+      "kosten_optimiert_heute": { "name": "Optimized cost today" },
+      "naechste_aktion": { "name": "Next action" }
+    },
+    "binary_sensor": {
+      "netzladen_empfohlen": { "name": "Grid charge recommended" },
+      "einspeisung_empfohlen": { "name": "Feed-in recommended" },
+      "lauf_empfohlen": { "name": "Run recommended" }
+    },
+    "select": {
+      "optimierungsprofil": { "name": "Optimization profile" },
+      "betriebsmodus": { "name": "Operation mode" }
+    },
+    "switch": {
+      "automatik_aktiv": { "name": "Automation active" }
+    }
+  },
+  "services": {
+    "recalculate": {
+      "name": "Recalculate",
+      "description": "Recalculate the energy plan."
+    },
+    "apply_plan": {
+      "name": "Apply plan",
+      "description": "Manually apply the current plan to devices."
+    },
+    "set_profile": {
+      "name": "Set profile",
+      "description": "Change the optimization profile."
     }
   }
 }

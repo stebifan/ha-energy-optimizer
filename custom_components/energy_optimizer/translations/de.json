@@ -22,13 +22,83 @@
       "already_configured": "Bereits konfiguriert"
     }
   },
+  "config_subentries": {
+    "battery": {
+      "title": "Akku",
+      "entry_type": "Akku",
+      "initiate_flow": {
+        "user": "Akku hinzufügen"
+      },
+      "step": {
+        "user": {
+          "title": "Akku konfigurieren",
+          "description": "EcoFlow, Victron-Puffer oder generischen Akku anlegen.",
+          "data": {
+            "name": "Name",
+            "battery_type": "Akku-Typ",
+            "capacity_kwh": "Kapazität (kWh)",
+            "priority": "Priorität",
+            "soc_entity": "SOC Sensor",
+            "normal_reserve": "Normale Backup Reserve",
+            "max_reserve": "Max. Backup Reserve",
+            "min_soc": "Min. SOC",
+            "backup_reserve_entity": "Backup Reserve Entity",
+            "pv_status_entity": "pv_status Helper",
+            "pv_strom_entity": "pv_strom Helper",
+            "pv_yield_power_entity": "PV Ertrag Leistung"
+          }
+        }
+      }
+    },
+    "pv": {
+      "title": "PV-Anlage",
+      "entry_type": "PV-Anlage",
+      "initiate_flow": {
+        "user": "PV-Anlage hinzufügen"
+      },
+      "step": {
+        "user": {
+          "title": "PV-Anlage konfigurieren",
+          "description": "Zusätzliche PV-Quelle für die Prognose.",
+          "data": {
+            "name": "Name",
+            "power_entity": "Energie heute",
+            "pv_power_entity": "Leistung jetzt"
+          }
+        }
+      }
+    },
+    "load": {
+      "title": "Verschiebbare Last",
+      "entry_type": "Verschiebbare Last",
+      "initiate_flow": {
+        "user": "Last hinzufügen"
+      },
+      "step": {
+        "user": {
+          "title": "Verschiebbare Last konfigurieren",
+          "description": "Pool, Waschmaschine oder andere zeitverschiebbare Verbraucher.",
+          "data": {
+            "name": "Name",
+            "control_entity": "Schalter oder Script",
+            "priority": "Priorität",
+            "constraint_type": "Constraint-Typ",
+            "window_start": "Zeitfenster Start",
+            "window_end": "Zeitfenster Ende",
+            "duration_minutes": "Laufzeit (Minuten)"
+          }
+        }
+      }
+    }
+  },
   "options": {
     "step": {
       "init": {
         "title": "Energy Optimizer Optionen",
         "data": {
           "operation_mode": "Betriebsmodus",
-          "profile": "Optimierungsprofil"
+          "profile": "Optimierungsprofil",
+          "optimizer_engine": "Optimizer-Engine"
         }
       }
     }
@@ -43,11 +113,14 @@
       "pv_prognose_morgen": { "name": "PV Prognose morgen" },
       "pv_leistung_jetzt": { "name": "PV Leistung jetzt" },
       "geschaetzte_einsparung_heute": { "name": "Geschätzte Einsparung heute" },
+      "kosten_baseline_heute": { "name": "Kosten Baseline heute" },
+      "kosten_optimiert_heute": { "name": "Kosten optimiert heute" },
       "naechste_aktion": { "name": "Nächste Aktion" }
     },
     "binary_sensor": {
       "netzladen_empfohlen": { "name": "Netzladen empfohlen" },
-      "einspeisung_empfohlen": { "name": "Einspeisung empfohlen" }
+      "einspeisung_empfohlen": { "name": "Einspeisung empfohlen" },
+      "lauf_empfohlen": { "name": "Lauf empfohlen" }
     },
     "select": {
       "optimierungsprofil": { "name": "Optimierungsprofil" },
