@@ -1,9 +1,9 @@
 {
   "domain": "energy_optimizer",
   "name": "Energy Optimizer",
-  "codeowners": ["@stefan"],
+  "codeowners": ["@stebifan"],
   "config_flow": true,
-  "documentation": "https://github.com/stefan/energy_optimizer",
+  "documentation": "https://github.com/stebifan/ha-energy-optimizer",
   "integration_type": "hub",
   "iot_class": "local_polling",
   "requirements": [],

@@ -26,13 +26,25 @@ Home Assistant Custom Integration (HACS) für ganzheitliches Energiemanagement m
 
 ## Installation (HACS)
 
-1. HACS → Integrations → Custom Repositories
-2. Repository-URL hinzufügen (dieses Repo)
-3. **Energy Optimizer** installieren
-4. Home Assistant neu starten
-5. Einstellungen → Geräte & Dienste → Integration hinzufügen → **Energy Optimizer**
+1. HACS → Integrations → ⋮ → Custom repositories
+2. Repository: `https://github.com/stebifan/ha-energy-optimizer`
+3. Kategorie: **Integration**
+4. **Energy Optimizer** installieren
+5. Home Assistant neu starten
+6. Einstellungen → Geräte & Dienste → Integration hinzufügen → **Energy Optimizer**
+
+> Das Repo muss auf GitHub **öffentlich** sein, damit HACS es akzeptiert.
 
 Alternativ manuell: `custom_components/energy_optimizer` nach `/config/custom_components/` kopieren.
+
+## Git-Remotes
+
+| Remote | URL | Zweck |
+|--------|-----|-------|
+| `origin` | GitLab (hoffmann-hosting) | Primäres privates Repo |
+| `upstream` | GitHub (stebifan/ha-energy-optimizer) | Öffentliches Mirror für HACS |
+
+Push zu GitHub: `git push upstream main`
 
 ## Einrichtung
 

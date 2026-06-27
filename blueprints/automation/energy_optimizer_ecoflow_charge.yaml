@@ -2,7 +2,7 @@ blueprint:
   name: Energy Optimizer EcoFlow Netzladen
   description: Setzt Backup Reserve wenn Netzladen empfohlen wird (signals_only Modus).
   domain: automation
-  source_url: https://github.com/stefan/energy_optimizer
+  source_url: https://github.com/stebifan/ha-energy-optimizer
   author: Energy Optimizer
   homeassistant:
     min_version: "2024.1.0"
