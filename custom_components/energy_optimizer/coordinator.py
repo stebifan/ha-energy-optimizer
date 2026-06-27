@@ -23,6 +23,9 @@ from .const import (
     CONF_CONSTRAINT_TYPE,
     CONF_CONTROL_ENTITY,
     CONF_DURATION_MINUTES,
+    CONF_GRID_EXPORT_ENERGY_ENTITY,
+    CONF_GRID_IMPORT_ENERGY_ENTITY,
+    CONF_GRID_POWER_ENTITY,
     CONF_HISTORY_DAYS,
     CONF_LOAD_POWER_ENTITY,
     CONF_MAX_RESERVE,
@@ -58,6 +61,7 @@ from .const import (
 )
 from .models.battery_model import BatteryConfig, BatteryState, OptimizerResult
 from .models.consumption_forecast import build_load_profile, forecast_load_kwh
+from .models.grid_balance import build_matched_hourly_pv, forecast_grid_balance
 from .models.load_planner import LoadConfig
 from .models.optimizer import optimize
 from .models.price_model import (
@@ -67,7 +71,7 @@ from .models.price_model import (
     parse_epex_data,
     price_rank_today,
 )
-from .models.pv_forecast import PvPlantForecast, aggregate_pv_forecast, distribute_hourly_pv
+from .models.pv_forecast import PvPlantForecast, aggregate_pv_forecast
 from .models.time_series import next_hours
 
 _LOGGER = logging.getLogger(__name__)
@@ -89,6 +93,16 @@ class EnergyOptimizerData:
         self.pv_forecast_today: float = 0.0
         self.pv_forecast_tomorrow: float = 0.0
         self.pv_power_now: float = 0.0
+        self.grid_import_power_w: float = 0.0
+        self.grid_export_power_w: float = 0.0
+        self.grid_import_today_kwh: float = 0.0
+        self.grid_export_today_kwh: float = 0.0
+        self.grid_import_forecast_today_kwh: float = 0.0
+        self.grid_export_forecast_today_kwh: float = 0.0
+        self.grid_import_forecast_tomorrow_kwh: float = 0.0
+        self.grid_export_forecast_tomorrow_kwh: float = 0.0
+        self.grid_import_hourly: list[dict[str, Any]] = []
+        self.grid_export_hourly: list[dict[str, Any]] = []
         self.optimizer: OptimizerResult | None = None
         self.batteries: list[BatteryState] = []
         self.loads: list[LoadConfig] = []
@@ -123,6 +137,7 @@ class EnergyOptimizerCoordinator(DataUpdateCoordinator[EnergyOptimizerData]):
             await self._update_prices(data, now)
             await self._update_load_forecast(data, now)
             await self._update_pv_forecast(data)
+            self._update_grid(data, now)
             self._load_batteries(data)
             self._load_shiftable_loads(data)
             self._run_optimizer(data, now)
@@ -268,6 +283,51 @@ class EnergyOptimizerCoordinator(DataUpdateCoordinator[EnergyOptimizerData]):
         data.pv_forecast_tomorrow = round(tomorrow or 0.0, 2)
         data.pv_power_now = round(power_now or pv_now, 0)
 
+    def _update_grid(self, data: EnergyOptimizerData, now: datetime) -> None:
+        """Read grid sensors and compute import/export forecasts."""
+        from .models.time_series import HourlyBucket
+
+        grid_power = self._state_float(self._config_value(CONF_GRID_POWER_ENTITY))
+        import_energy = self._state_float(
+            self._config_value(CONF_GRID_IMPORT_ENERGY_ENTITY)
+        )
+        export_energy = self._state_float(
+            self._config_value(CONF_GRID_EXPORT_ENERGY_ENTITY)
+        )
+
+        hourly_load = [
+            HourlyBucket(
+                start=datetime.fromisoformat(item["start"]),
+                price_eur_kwh=0.0,
+                load_kwh=item["load_kwh"],
+            )
+            for item in data.load_hourly
+        ]
+        hourly_pv = build_matched_hourly_pv(
+            hourly_load,
+            data.pv_forecast_today,
+            data.pv_forecast_tomorrow,
+            now,
+        )
+        grid = forecast_grid_balance(
+            hourly_load,
+            hourly_pv,
+            now,
+            import_energy_today_kwh=import_energy,
+            export_energy_today_kwh=export_energy,
+            import_power_w=grid_power,
+        )
+        data.grid_import_power_w = grid.import_power_w
+        data.grid_export_power_w = grid.export_power_w
+        data.grid_import_today_kwh = grid.import_today_kwh
+        data.grid_export_today_kwh = grid.export_today_kwh
+        data.grid_import_forecast_today_kwh = grid.import_forecast_today_kwh
+        data.grid_export_forecast_today_kwh = grid.export_forecast_today_kwh
+        data.grid_import_forecast_tomorrow_kwh = grid.import_forecast_tomorrow_kwh
+        data.grid_export_forecast_tomorrow_kwh = grid.export_forecast_tomorrow_kwh
+        data.grid_import_hourly = grid.hourly_import or []
+        data.grid_export_hourly = grid.hourly_export or []
+
     def _load_batteries(self, data: EnergyOptimizerData) -> None:
         """Load battery configs from subentries."""
         batteries: list[BatteryState] = []
@@ -330,9 +390,12 @@ class EnergyOptimizerCoordinator(DataUpdateCoordinator[EnergyOptimizerData]):
             )
             for item in data.load_hourly
         ]
-        tz = dt_util.get_time_zone(str(self.hass.config.time_zone))
-        hour_starts = next_hours(now, max(len(hourly_price), 24), tz)
-        hourly_pv = distribute_hourly_pv(data.pv_forecast_today, hour_starts)
+        hourly_pv = build_matched_hourly_pv(
+            hourly_load,
+            data.pv_forecast_today,
+            data.pv_forecast_tomorrow,
+            now,
+        )
 
         profile = self.config_entry.options.get(
             CONF_PROFILE, self.config_entry.data.get(CONF_PROFILE, PROFILE_BALANCED)
@@ -408,6 +471,12 @@ class EnergyOptimizerCoordinator(DataUpdateCoordinator[EnergyOptimizerData]):
             options={**self.config_entry.options, CONF_PROFILE: profile},
         )
         await self.async_request_refresh()
+
+    def _config_value(self, key: str) -> Any:
+        """Read config value from options with fallback to entry data."""
+        if key in self.config_entry.options:
+            return self.config_entry.options[key]
+        return self.config_entry.data.get(key)
 
     def _subentries(self, subentry_type: str) -> list[ConfigSubentry]:
         """Return config subentries of a type."""

@@ -16,6 +16,8 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import (
     ATTR_FORECAST,
+    ATTR_GRID_EXPORT,
+    ATTR_GRID_IMPORT,
     ATTR_HOURLY,
     ATTR_PLAN,
     ATTR_SLOTS,
@@ -43,6 +45,14 @@ async def async_setup_entry(
             EnergyOptimizerSavingsSensor(coordinator, entry),
             EnergyOptimizerBaselineCostSensor(coordinator, entry),
             EnergyOptimizerOptimizedCostSensor(coordinator, entry),
+            EnergyOptimizerGridImportPowerSensor(coordinator, entry),
+            EnergyOptimizerGridExportPowerSensor(coordinator, entry),
+            EnergyOptimizerGridImportTodaySensor(coordinator, entry),
+            EnergyOptimizerGridExportTodaySensor(coordinator, entry),
+            EnergyOptimizerGridImportForecastTodaySensor(coordinator, entry),
+            EnergyOptimizerGridExportForecastTodaySensor(coordinator, entry),
+            EnergyOptimizerGridImportForecastTomorrowSensor(coordinator, entry),
+            EnergyOptimizerGridExportForecastTomorrowSensor(coordinator, entry),
             EnergyOptimizerPlanSensor(coordinator, entry),
         ]
     )
@@ -236,6 +246,7 @@ class EnergyOptimizerSavingsSensor(EnergyOptimizerEntity):
     """Estimated savings."""
 
     _attr_native_unit_of_measurement = "€"
+    _attr_device_class = SensorDeviceClass.MONETARY
 
     def __init__(
         self,
@@ -259,6 +270,7 @@ class EnergyOptimizerBaselineCostSensor(EnergyOptimizerEntity):
     """Baseline cost without optimization."""
 
     _attr_native_unit_of_measurement = "€"
+    _attr_device_class = SensorDeviceClass.MONETARY
 
     def __init__(
         self,
@@ -278,6 +290,7 @@ class EnergyOptimizerOptimizedCostSensor(EnergyOptimizerEntity):
     """Optimized cost estimate."""
 
     _attr_native_unit_of_measurement = "€"
+    _attr_device_class = SensorDeviceClass.MONETARY
 
     def __init__(
         self,
@@ -291,6 +304,160 @@ class EnergyOptimizerOptimizedCostSensor(EnergyOptimizerEntity):
     def native_value(self) -> float:
         """Return optimized cost."""
         return self.coordinator.data.optimized_cost_eur
+
+
+class EnergyOptimizerGridImportPowerSensor(EnergyOptimizerEntity):
+    """Grid import power now."""
+
+    _attr_native_unit_of_measurement = UnitOfPower.WATT
+    _attr_device_class = SensorDeviceClass.POWER
+    _attr_state_class = SensorStateClass.MEASUREMENT
+
+    def __init__(self, coordinator, entry) -> None:
+        """Initialize."""
+        super().__init__(coordinator, entry, "grid_import_power", "Netzbezug Leistung jetzt")
+
+    @property
+    def native_value(self) -> float:
+        """Return import power."""
+        return self.coordinator.data.grid_import_power_w
+
+
+class EnergyOptimizerGridExportPowerSensor(EnergyOptimizerEntity):
+    """Grid export power now."""
+
+    _attr_native_unit_of_measurement = UnitOfPower.WATT
+    _attr_device_class = SensorDeviceClass.POWER
+    _attr_state_class = SensorStateClass.MEASUREMENT
+
+    def __init__(self, coordinator, entry) -> None:
+        """Initialize."""
+        super().__init__(coordinator, entry, "grid_export_power", "Netzeinspeisung Leistung jetzt")
+
+    @property
+    def native_value(self) -> float:
+        """Return export power."""
+        return self.coordinator.data.grid_export_power_w
+
+
+class EnergyOptimizerGridImportTodaySensor(EnergyOptimizerEntity):
+    """Grid import energy today."""
+
+    _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
+    _attr_device_class = SensorDeviceClass.ENERGY
+
+    def __init__(self, coordinator, entry) -> None:
+        """Initialize."""
+        super().__init__(coordinator, entry, "grid_import_today", "Netzbezug heute")
+
+    @property
+    def native_value(self) -> float:
+        """Return import energy today."""
+        return self.coordinator.data.grid_import_today_kwh
+
+
+class EnergyOptimizerGridExportTodaySensor(EnergyOptimizerEntity):
+    """Grid export energy today."""
+
+    _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
+    _attr_device_class = SensorDeviceClass.ENERGY
+
+    def __init__(self, coordinator, entry) -> None:
+        """Initialize."""
+        super().__init__(coordinator, entry, "grid_export_today", "Netzeinspeisung heute")
+
+    @property
+    def native_value(self) -> float:
+        """Return export energy today."""
+        return self.coordinator.data.grid_export_today_kwh
+
+
+class EnergyOptimizerGridImportForecastTodaySensor(EnergyOptimizerEntity):
+    """Forecast grid import today."""
+
+    _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
+    _attr_device_class = SensorDeviceClass.ENERGY
+
+    def __init__(self, coordinator, entry) -> None:
+        """Initialize."""
+        super().__init__(
+            coordinator, entry, "grid_import_forecast_today", "Netzbezug Prognose heute"
+        )
+
+    @property
+    def native_value(self) -> float:
+        """Return forecast import today."""
+        return self.coordinator.data.grid_import_forecast_today_kwh
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        """Return hourly forecast."""
+        return {ATTR_GRID_IMPORT: self.coordinator.data.grid_import_hourly}
+
+
+class EnergyOptimizerGridExportForecastTodaySensor(EnergyOptimizerEntity):
+    """Forecast grid export today."""
+
+    _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
+    _attr_device_class = SensorDeviceClass.ENERGY
+
+    def __init__(self, coordinator, entry) -> None:
+        """Initialize."""
+        super().__init__(
+            coordinator, entry, "grid_export_forecast_today", "Einspeisung Prognose heute"
+        )
+
+    @property
+    def native_value(self) -> float:
+        """Return forecast export today."""
+        return self.coordinator.data.grid_export_forecast_today_kwh
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        """Return hourly forecast."""
+        return {ATTR_GRID_EXPORT: self.coordinator.data.grid_export_hourly}
+
+
+class EnergyOptimizerGridImportForecastTomorrowSensor(EnergyOptimizerEntity):
+    """Forecast grid import tomorrow."""
+
+    _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
+    _attr_device_class = SensorDeviceClass.ENERGY
+
+    def __init__(self, coordinator, entry) -> None:
+        """Initialize."""
+        super().__init__(
+            coordinator,
+            entry,
+            "grid_import_forecast_tomorrow",
+            "Netzbezug Prognose morgen",
+        )
+
+    @property
+    def native_value(self) -> float:
+        """Return forecast import tomorrow."""
+        return self.coordinator.data.grid_import_forecast_tomorrow_kwh
+
+
+class EnergyOptimizerGridExportForecastTomorrowSensor(EnergyOptimizerEntity):
+    """Forecast grid export tomorrow."""
+
+    _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
+    _attr_device_class = SensorDeviceClass.ENERGY
+
+    def __init__(self, coordinator, entry) -> None:
+        """Initialize."""
+        super().__init__(
+            coordinator,
+            entry,
+            "grid_export_forecast_tomorrow",
+            "Einspeisung Prognose morgen",
+        )
+
+    @property
+    def native_value(self) -> float:
+        """Return forecast export tomorrow."""
+        return self.coordinator.data.grid_export_forecast_tomorrow_kwh
 
 
 class EnergyOptimizerPlanSensor(EnergyOptimizerEntity):

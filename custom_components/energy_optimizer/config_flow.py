@@ -24,6 +24,9 @@ from .const import (
     CONF_CONSTRAINT_TYPE,
     CONF_CONTROL_ENTITY,
     CONF_DURATION_MINUTES,
+    CONF_GRID_EXPORT_ENERGY_ENTITY,
+    CONF_GRID_IMPORT_ENERGY_ENTITY,
+    CONF_GRID_POWER_ENTITY,
     CONF_HISTORY_DAYS,
     CONF_LOAD_POWER_ENTITY,
     CONF_MAX_RESERVE,
@@ -79,6 +82,15 @@ STEP_USER_SCHEMA = vol.Schema(
         ),
         vol.Optional(CONF_PV_POWER_NOW_ENTITY): selector.EntitySelector(
             selector.EntitySelectorConfig(domain="sensor", device_class="power")
+        ),
+        vol.Optional(CONF_GRID_POWER_ENTITY): selector.EntitySelector(
+            selector.EntitySelectorConfig(domain="sensor", device_class="power")
+        ),
+        vol.Optional(CONF_GRID_IMPORT_ENERGY_ENTITY): selector.EntitySelector(
+            selector.EntitySelectorConfig(domain="sensor", device_class="energy")
+        ),
+        vol.Optional(CONF_GRID_EXPORT_ENERGY_ENTITY): selector.EntitySelector(
+            selector.EntitySelectorConfig(domain="sensor", device_class="energy")
         ),
         vol.Optional(CONF_WEATHER_ENTITY): selector.EntitySelector(
             selector.EntitySelectorConfig(domain="weather")
@@ -144,6 +156,12 @@ class EnergyOptimizerConfigFlow(ConfigFlow, domain=DOMAIN):
 class EnergyOptimizerOptionsFlow(OptionsFlow):
     """Handle options."""
 
+    def _config_value(self, key: str) -> Any:
+        """Read value from options with fallback to config entry data."""
+        if key in self.config_entry.options:
+            return self.config_entry.options[key]
+        return self.config_entry.data.get(key)
+
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
@@ -178,6 +196,24 @@ class EnergyOptimizerOptionsFlow(OptionsFlow):
                             ),
                         ),
                     ): vol.In(OPTIMIZER_ENGINES),
+                    vol.Optional(
+                        CONF_GRID_POWER_ENTITY,
+                        default=self._config_value(CONF_GRID_POWER_ENTITY),
+                    ): selector.EntitySelector(
+                        selector.EntitySelectorConfig(domain="sensor", device_class="power")
+                    ),
+                    vol.Optional(
+                        CONF_GRID_IMPORT_ENERGY_ENTITY,
+                        default=self._config_value(CONF_GRID_IMPORT_ENERGY_ENTITY),
+                    ): selector.EntitySelector(
+                        selector.EntitySelectorConfig(domain="sensor", device_class="energy")
+                    ),
+                    vol.Optional(
+                        CONF_GRID_EXPORT_ENERGY_ENTITY,
+                        default=self._config_value(CONF_GRID_EXPORT_ENERGY_ENTITY),
+                    ): selector.EntitySelector(
+                        selector.EntitySelectorConfig(domain="sensor", device_class="energy")
+                    ),
                 }
             ),
         )

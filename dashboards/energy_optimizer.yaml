@@ -20,6 +20,20 @@ cards:
       - entity: sensor.energy_optimizer_pv_prognose_heute
       - entity: sensor.energy_optimizer_pv_leistung_jetzt
   - type: glance
+    title: Netz
+    entities:
+      - entity: sensor.energy_optimizer_netzbezug_leistung_jetzt
+      - entity: sensor.energy_optimizer_netzeinspeisung_leistung_jetzt
+      - entity: sensor.energy_optimizer_netzbezug_heute
+      - entity: sensor.energy_optimizer_netzeinspeisung_heute
+  - type: glance
+    title: Netz Prognose
+    entities:
+      - entity: sensor.energy_optimizer_netzbezug_prognose_heute
+      - entity: sensor.energy_optimizer_einspeisung_prognose_heute
+      - entity: sensor.energy_optimizer_netzbezug_prognose_morgen
+      - entity: sensor.energy_optimizer_einspeisung_prognose_morgen
+  - type: glance
     title: Kosten
     entities:
       - entity: sensor.energy_optimizer_kosten_baseline_heute

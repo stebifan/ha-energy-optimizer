@@ -10,6 +10,9 @@
           "pv_forecast_today_entity": "PV forecast today",
           "pv_forecast_tomorrow_entity": "PV forecast tomorrow",
           "pv_power_now_entity": "PV power now",
+          "grid_power_entity": "Grid power (signed)",
+          "grid_import_energy_entity": "Grid import today (kWh)",
+          "grid_export_energy_entity": "Grid export today (kWh)",
           "weather_entity": "Weather",
           "price_surcharge_eur_kwh": "Price surcharge €/kWh",
           "history_days": "History days",
@@ -98,7 +101,10 @@
         "data": {
           "operation_mode": "Operation mode",
           "profile": "Optimization profile",
-          "optimizer_engine": "Optimizer engine"
+          "optimizer_engine": "Optimizer engine",
+          "grid_power_entity": "Grid power (signed)",
+          "grid_import_energy_entity": "Grid import today (kWh)",
+          "grid_export_energy_entity": "Grid export today (kWh)"
         }
       }
     }
@@ -115,6 +121,14 @@
       "geschaetzte_einsparung_heute": { "name": "Estimated savings today" },
       "kosten_baseline_heute": { "name": "Baseline cost today" },
       "kosten_optimiert_heute": { "name": "Optimized cost today" },
+      "netzbezug_leistung_jetzt": { "name": "Grid import power now" },
+      "netzeinspeisung_leistung_jetzt": { "name": "Grid export power now" },
+      "netzbezug_heute": { "name": "Grid import today" },
+      "netzeinspeisung_heute": { "name": "Grid export today" },
+      "netzbezug_prognose_heute": { "name": "Grid import forecast today" },
+      "einspeisung_prognose_heute": { "name": "Grid export forecast today" },
+      "netzbezug_prognose_morgen": { "name": "Grid import forecast tomorrow" },
+      "einspeisung_prognose_morgen": { "name": "Grid export forecast tomorrow" },
       "naechste_aktion": { "name": "Next action" }
     },
     "binary_sensor": {

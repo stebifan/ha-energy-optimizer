@@ -10,6 +10,9 @@
           "pv_forecast_today_entity": "PV Prognose heute",
           "pv_forecast_tomorrow_entity": "PV Prognose morgen",
           "pv_power_now_entity": "PV Leistung jetzt",
+          "grid_power_entity": "Netz-Leistung (signed)",
+          "grid_import_energy_entity": "Netzbezug heute (kWh)",
+          "grid_export_energy_entity": "Einspeisung heute (kWh)",
           "weather_entity": "Wetter",
           "price_surcharge_eur_kwh": "Preisaufschlag €/kWh",
           "history_days": "Historie Tage",
@@ -98,7 +101,10 @@
         "data": {
           "operation_mode": "Betriebsmodus",
           "profile": "Optimierungsprofil",
-          "optimizer_engine": "Optimizer-Engine"
+          "optimizer_engine": "Optimizer-Engine",
+          "grid_power_entity": "Netz-Leistung (signed)",
+          "grid_import_energy_entity": "Netzbezug heute (kWh)",
+          "grid_export_energy_entity": "Einspeisung heute (kWh)"
         }
       }
     }
@@ -115,6 +121,14 @@
       "geschaetzte_einsparung_heute": { "name": "Geschätzte Einsparung heute" },
       "kosten_baseline_heute": { "name": "Kosten Baseline heute" },
       "kosten_optimiert_heute": { "name": "Kosten optimiert heute" },
+      "netzbezug_leistung_jetzt": { "name": "Netzbezug Leistung jetzt" },
+      "netzeinspeisung_leistung_jetzt": { "name": "Netzeinspeisung Leistung jetzt" },
+      "netzbezug_heute": { "name": "Netzbezug heute" },
+      "netzeinspeisung_heute": { "name": "Netzeinspeisung heute" },
+      "netzbezug_prognose_heute": { "name": "Netzbezug Prognose heute" },
+      "einspeisung_prognose_heute": { "name": "Einspeisung Prognose heute" },
+      "netzbezug_prognose_morgen": { "name": "Netzbezug Prognose morgen" },
+      "einspeisung_prognose_morgen": { "name": "Einspeisung Prognose morgen" },
       "naechste_aktion": { "name": "Nächste Aktion" }
     },
     "binary_sensor": {
